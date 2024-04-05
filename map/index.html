@@ -146,6 +146,38 @@
     </div>
 
     <script>
+
+    async function fetchWeatherData(district) {
+        try {
+            const response = await fetch(`https://ikweatherapi.azurewebsites.net/districts/${district}`);
+            if (!response.ok) {
+                alert('Network response was not ok');
+                return null; // Return null to handle the error
+            }
+            const data = await response.json();
+            displayWeatherInfo(district, data); // Pass data to display function
+        } catch (error) {
+            alert('Error fetching weather data:', error);
+            return null;
+        }
+    }
+
+    function displayWeatherInfo(district, data) {
+        if (data && data.length > 0) { // Check if data exists and is not empty
+            const weatherData = data[0]; // Access the first element of the array
+            document.getElementById("weatherDataBody").innerHTML = `
+                <tr>
+                    <td>${district}</td>
+                    <td>${weatherData.humidity}</td>
+                    <td>${weatherData.wind}</td>
+                    <td>${weatherData.temperature}</td>
+                </tr>
+            `;
+        } else {
+            document.getElementById("weatherData").innerHTML = "<p>Weather data not available.</p>";
+        }
+    }
+
     // Initialize a variable to store the reference to the current table
     var currentTable = null;
 
@@ -159,9 +191,10 @@
             }
 
             // Extract data from the hovered path (you may need to define data attributes in your SVG)
-            var humidity = parseFloat(path.getAttribute('data-humidity'));
-            var wind = parseFloat(path.getAttribute('data-wind'));
-            var temperature = parseFloat(path.getAttribute('data-temperature'));
+            var district = path.getAttribute('data-district');
+
+            // Call the fetchWeatherData function to get weather data for the district
+            fetchWeatherData(district);
 
             // Create a new table
             var table = document.createElement('table');
@@ -174,13 +207,8 @@
                         <th>Temperature (°C)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>${path.getAttribute('xlink:title')}</td>
-                        <td>${humidity}</td>
-                        <td>${wind}</td>
-                        <td>${temperature}</td>
-                    </tr>
+                <tbody id="weatherDataBody">
+                    <!-- Weather data will be displayed here -->
                 </tbody>
             `;
 
@@ -203,7 +231,9 @@
             });
         });
     });
+
 </script>
+
 
 
     </div>
