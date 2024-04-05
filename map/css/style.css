@@ -58,3 +58,10 @@ body {
 #weatherData tbody tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+
+#titlehead {
+  text-align: center;
+  font-size: 60px;
+  padding: auto;
+  background-color: aliceblue;
+}
